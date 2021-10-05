@@ -1,11 +1,15 @@
-from geoindex import GeoGridIndex, GeoPoint
-from pyrebase import pyrebase
 import geohash
-from geoindex import utils
-from geoindex.geo_grid_index import GEO_HASH_GRID_SIZE
 import requests
 
+from geoindex import GeoGridIndex
+from geoindex import GeoPoint
+from geoindex import utils
+from geoindex.geo_grid_index import GEO_HASH_GRID_SIZE
+from pyrebase import pyrebase
+
 # GeoFire for Python - By Guanjiu Zhang
+
+
 class GeoFire(GeoGridIndex):
     def __init__(self,
                  lat,
@@ -13,7 +17,7 @@ class GeoFire(GeoGridIndex):
                  radius,
                  unit='km'
                  ):
-        GeoGridIndex.__init__(self,precision=3)
+        GeoGridIndex.__init__(self, precision=3)
         self.center_point = GeoPoint(
             latitude=float(lat),
             longitude=float(lon)
@@ -63,7 +67,7 @@ class GeoFire(GeoGridIndex):
         search_region_geohashes = geohash.expand(self.get_point_hash(self.center_point))
         return search_region_geohashes
 
-    def query_nearby_objects(self, query_ref, geohash_ref, token_id = None):
+    def query_nearby_objects(self, query_ref, geohash_ref, token_id=None):
         search_region_hashes = self.__get_search_region_geohashes()
         all_nearby_objects = {}
         for search_region_hash in search_region_hashes:
