@@ -70,16 +70,20 @@ class GeoFire(GeoGridIndex):
     def query_nearby_objects(self, query_ref, geohash_ref, token_id=None):
         search_region_hashes = self.__get_search_region_geohashes()
         all_nearby_objects = {}
+
+        firebase = pyrebase.initialize_app(self.__config)
+        db = firebase.database()
+
         for search_region_hash in search_region_hashes:
             try:
-                firebase = pyrebase.initialize_app(self.__config)
-                db = firebase.database()
-                test_node = db.child(str(query_ref))
-                nearby_objects = test_node.order_by_child(str(geohash_ref)). \
-                    start_at(search_region_hash).end_at(search_region_hash + '\uf8ff').get(token=token_id).val()
+
+                start = search_region_hash
+                end = search_region_hash + '\uf8ff'
+
+                nearby_objects = db.child(query_ref).order_by_child(str(geohash_ref)).start_at(start).end_at(end).get(token=token_id).val()
+
                 all_nearby_objects.update(nearby_objects)
             except requests.HTTPError as error:
                 raise error
-            except:
-                continue
+
         return all_nearby_objects
